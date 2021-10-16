@@ -35,19 +35,28 @@ class GoodsItem {
 
 class GoodsList {
   goods = [];
+
   constructor() {
     this.fetchGoods();
+    this.filteredGoods = [];
   }
 
   fetchGoods() {
     serverRequest('GET', GOODS_LIST).then((goods) => {
       this.goods = goods;
+      this.filteredGoods = goods;
       this.render();
     });
   }
 
+  filterGoods(value) {
+    const regexp = new RegExp(value, 'i');
+    this.filteredGoods = this.goods.filter(good => regexp.test(good.product_name));
+    this.render();
+  }
+
   render() {
-    const goodsItems = this.goods.map(({ product_name, price }) => {
+    const goodsItems = this.filteredGoods.map(({ product_name, price }) => {
       const goodsItem = new GoodsItem(product_name, price);
       return goodsItem.render();
     });
@@ -123,5 +132,11 @@ onload = () => {
   document.getElementById('cartBtn').onclick = function () {
     let cart = document.getElementById('cart');
     cart.classList.toggle("cart_visible");
+  }
+
+  document.getElementById('searchBtn').onclick = function (e) {
+    let searchInput = document.getElementById('searchInput');
+    const value = searchInput.value;
+    goodsList.filterGoods(value);
   }
 }
