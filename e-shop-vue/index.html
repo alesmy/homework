@@ -22,7 +22,11 @@
          <div class="wrap goods">
             <goods-item v-for="item in filteredGoods" :key="item.id" :item='item'></goods-item>
          </div>
-         <basket-card v-if="basketCardVision"></basket-card>
+         <basket-card v-if="basketCardVision">
+            <template v-slot:header>
+               <general-button @click="setVision" class="card__btnClose">X</general-button>
+            </template>
+         </basket-card>
       </main>
    </div>
 
