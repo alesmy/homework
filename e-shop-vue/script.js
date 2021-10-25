@@ -1,27 +1,17 @@
-const API = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses';
-const GOODS_LIST = '/catalogData.json';
-const CARD_LIST = '/getBasket.json';
-const ADD_GOOD_TO_BASKET = '/addToBasket.json';
-const REMOVE_GOOD_FROM_CARD = '/deleteFromBasket.json';
+const GOODS_LIST = 'http://localhost:3000/goods.json';
+const ADD_GOOD_URL = 'http://localhost:3000/api';
+const CARD_LIST = 'http://localhost:3000/basket-goods.json';
 
-const transformGoods = function (goods) {
-  return goods.map((_good) => {
-    return {
-      id: _good.id_product,
-      title: _good.product_name,
-      price: _good.price,
-      quantity: _good.quantity
-    }
-  })
-}
-
-const serverRequest = function (method, postfix) {
+const serverRequest = function (method, path, body) {
   return new Promise((resolve) => {
     const xhr = new XMLHttpRequest();
-    xhr.open(method, `${API}${postfix}`, true);
-    xhr.send();
+    xhr.open(method, path, true);
+    if (body) {
+      xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+    }
+    xhr.send(body);
     xhr.onload = (e) => {
-      resolve(JSON.parse(e.target.responseText));
+      resolve(JSON.parse(e.target.response));
     };
   })
 }
@@ -33,7 +23,7 @@ Vue.component('goods-item', {
       <div class="goods__img"></div>
       <h3 class="goods__title">{{ item.title }}</h3>
       <div class="goods__price">{{ item.price }}</div>
-      <general-button class="btn_dark goods__btn">Добавить</general-button>
+      <general-button class="btn_dark goods__btn" @click="$emit('click', item)">Добавить</general-button>
     </div>
   `
 });
@@ -46,36 +36,21 @@ Vue.component('basket-goods-item', {
         <h3 class="goods__title">{{ item.title }}</h3>
         <div class="goods__price">{{ item.price }}</div>
       </div>
-      <general-button class="btn_dark ">Удалить</general-button>  
+      <general-button class="btn_dark" @click="$emit('click', item)">Удалить</general-button>  
     </div>
   `
 });
 
 Vue.component('basket-card', {
-  mounted: function () {
-    serverRequest('GET', CARD_LIST).then((goods) => {
-      let resultResponse = goods.contents;
-      let resultGoods = transformGoods(resultResponse);
-      this.goodsInCart = resultGoods;
-      this.amountInCart = goods.amount;
-      this.countInCart = goods.countGoods;
-    });
-  },
   data() {
     return {
-      amountInCart: 0,
-      countInCart: 0,
-      goodsInCart: [],
+      basketGoods: []
     }
   },
   template: `
     <div class="cart">
       <slot name='header'></slot>
-      <basket-goods-item v-for="item in this.goodsInCart" :key="item.id" :item='item'></basket-goods-item>
-      <div v-show="this.countInCart > 0">Итого:
-        <div>Количество: {{ this.countInCart }}</div>
-        <div>Сумма: {{ this.amountInCart }}</div>
-      </div>
+      <slot></slot>
     </div>
   `,
 });
@@ -93,8 +68,18 @@ const app = new Vue({
   data: {
     goods: [],
     filteredGoods: [],
+    basketGoods: [],
     basketCardVision: false,
     search: '',
+  },
+  mounted: function () {
+    serverRequest('GET', GOODS_LIST).then((goods) => {
+      this.goods = goods;
+      this.filteredGoods = goods;
+    });
+    serverRequest('GET', CARD_LIST).then((goods) => {
+      this.basketGoods = goods;
+    });
   },
   methods: {
     setVision: function () {
@@ -104,13 +89,17 @@ const app = new Vue({
       this.filteredGoods = this.goods.filter(({ title }) => {
         return new RegExp(this.search, 'i').test(title);
       })
-    }
-  },
-  mounted: function () {
-    serverRequest('GET', GOODS_LIST).then((goods) => {
-      let resultGoodsList = transformGoods(goods);
-      this.goods = resultGoodsList;
-      this.filteredGoods = resultGoodsList;
-    });
+    },
+    addGood: function ({ title, price, id }) {
+      serverRequest('PATCH', ADD_GOOD_URL, JSON.stringify({ title, price, id })).then((_basketGoods) => {
+        this.basketGoods = _basketGoods;
+      })
+    },
+    deleteGood: function ({ id }) {
+      serverRequest('DELETE', CARD_LIST, JSON.stringify({ id })).then((_basketGoods) => {
+        this.basketGoods = _basketGoods;
+        console.log('_basketGoods ' + _basketGoods);
+      })
+    },
   },
 });

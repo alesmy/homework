@@ -20,12 +20,15 @@
       </header>
       <main class="main">
          <div class="wrap goods">
-            <goods-item v-for="item in filteredGoods" :key="item.id" :item='item'></goods-item>
+            <goods-item v-for="item in filteredGoods" :key="item.id" :item='item' @click="addGood">
+            </goods-item>
          </div>
          <basket-card v-if="basketCardVision">
             <template v-slot:header>
                <general-button @click="setVision" class="card__btnClose">X</general-button>
             </template>
+            <basket-goods-item v-for="item in basketGoods" :key="item.id" :item='item' @click="deleteGood">
+            </basket-goods-item>
          </basket-card>
       </main>
    </div>
