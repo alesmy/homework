@@ -90,13 +90,13 @@ const app = new Vue({
         return new RegExp(this.search, 'i').test(title);
       })
     },
-    addGood: function ({ title, price, id }) {
-      serverRequest('PATCH', ADD_GOOD_URL, JSON.stringify({ title, price, id })).then((_basketGoods) => {
+    addGood: function ({ title, price }) {
+      serverRequest('PATCH', ADD_GOOD_URL, JSON.stringify({ title, price })).then((_basketGoods) => {
         this.basketGoods = _basketGoods;
       })
     },
-    deleteGood: function ({ id }) {
-      serverRequest('DELETE', CARD_LIST, JSON.stringify({ id })).then((_basketGoods) => {
+    deleteGood: function (item) {
+      serverRequest('DELETE', ADD_GOOD_URL, JSON.stringify(item)).then((_basketGoods) => {
         this.basketGoods = _basketGoods;
         console.log('_basketGoods ' + _basketGoods);
       })

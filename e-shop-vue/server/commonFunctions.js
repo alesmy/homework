@@ -38,15 +38,17 @@ const addItems = (path, item) => {
     })
 }
 
-const deleteItem = (path, id) => {
+const deleteItem = (path, item) => {
     return new Promise((resolve, reject) => {
+
         readItems(path).then((items) => {
-            const resultItems = [...items];
 
-            resultItems = resultItems.filter(el => el.id != id);
+            let resultBasketItems = [...items];
 
-            writeItems(path, resultItems).then((_resultItems) => {
-                resolve(resultItems);
+            resultBasketItems = resultBasketItems.filter(el => el.title != item.title);
+
+            writeItems(path, resultBasketItems).then((_resultBasketItems) => {
+                resolve(resultBasketItems);
             }).catch((err) => {
                 reject(err);
             })

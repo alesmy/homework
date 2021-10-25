@@ -1,22 +1,18 @@
 [
     {
         "title": "Shirt",
-        "price": 150,
-        "id": 12345
+        "price": 150
     },
     {
         "title": "Socks",
-        "price": 50,
-        "id": 67891
+        "price": 50
     },
     {
         "title": "Jacket",
-        "price": 350,
-        "id": 15931
+        "price": 350
     },
     {
         "title": "Shoes",
-        "price": 250,
-        "id": 35751
+        "price": 250
     }
 ]
