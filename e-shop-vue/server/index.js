@@ -15,12 +15,12 @@ app.patch('/api', (res, req) => {
     });
 });
 
-app.delete('/api', (res, req) => {
-    deleteItem(BASKET_GOODS_PATH, res.body).then((items) => {
-        req.setHeader('Content-Type', 'application/json; charset=UTF-8')
-        req.send(items)
-    });
-});
+// app.delete('/api', (res, req) => {
+//     deleteItem(BASKET_GOODS_PATH, res.body).then((items) => {
+//         req.setHeader('Content-Type', 'application/json; charset=UTF-8')
+//         req.send(items)
+//     });
+// });
 
 app.listen('3000', () => {
     console.log('server is run!');

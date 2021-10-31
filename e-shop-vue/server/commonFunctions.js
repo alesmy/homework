@@ -38,22 +38,23 @@ const addItems = (path, item) => {
     })
 }
 
-const deleteItem = (path, item) => {
-    return new Promise((resolve, reject) => {
+// const deleteItem = (path, item) => {
+//     return new Promise((resolve, reject) => {
 
-        readItems(path).then((items) => {
+//         readItems(path).then((items) => {
 
-            let resultBasketItems = [...items];
+//             let resultBasketItems = [...items];
 
-            resultBasketItems = resultBasketItems.filter(el => el.title != item.title);
+//             resultBasketItems = resultBasketItems.filter(el => el.title != item.title);
 
-            writeItems(path, resultBasketItems).then((_resultBasketItems) => {
-                resolve(resultBasketItems);
-            }).catch((err) => {
-                reject(err);
-            })
-        })
-    })
-}
+//             writeItems(path, resultBasketItems).then((_resultBasketItems) => {
+//                 resolve(resultBasketItems);
+//             }).catch((err) => {
+//                 reject(err);
+//             })
+//         })
+//     })
+// }
 
-module.exports = { addItems, deleteItem };
+// module.exports = { addItems, deleteItem };
+module.exports = { addItems };
